@@ -8,15 +8,13 @@ def handler(event: dict, context):
     print(f'REQUEST :: {event}')
     request_data = json.loads(event['body'])
     filename = request_data['file_name']
-    binary_data = S3Client.download_file(filename)# Encode the binary data to base64
-    base64_data = base64.b64encode(binary_data).decode('utf-8')
-
+    binary_data = S3Client.download_file(filename)
     return {
         'statusCode': 200,
         'headers': {
             'Content-Type': 'application/octet-stream',
-            'Content-Disposition': f'attachment; filename="{filename.split("/")[1]}"'
+            'Content-Disposition': f'attachment; filename="{filename.split("/")[0]}"'
         },
-        'body': base64_data,
-        'isBase64Encoded': True
+        'body': binary_data,
+        'isBase64Encoded': False  # Indicar que los datos no están codificados en base64
     }
