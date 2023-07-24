@@ -9,12 +9,14 @@ def handler(event: dict, context):
     request_data = json.loads(event['body'])
     filename = request_data['file_name']
     binary_data = S3Client.download_file(filename)
+    base64_data = base64.b64encode(binary_data).decode('utf-8')
+
     return {
         'statusCode': 200,
         'headers': {
             'Content-Type': 'application/octet-stream',
-            'Content-Disposition': f'attachment; filename="{filename.split("/")[0]}"'
+            'Content-Disposition': f'attachment; filename="{filename.split("/")[1]}"'
         },
-        'body': binary_data,
-        'isBase64Encoded': False  # Indicar que los datos no están codificados en base64
+        'body': base64_data,
+        'isBase64Encoded': True  # Indicar que los datos están codificados en base64
     }
