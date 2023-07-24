@@ -9,11 +9,14 @@ def handler(event: dict, context):
     request_data = json.loads(event['body'])
     filename = request_data['file_name']
     signed_url = S3Client.generate_signed_url(filename)
+    response = {
+        'url_firmada': signed_url
+    }
 
     return {
         'statusCode': 200,
         'headers': {
             'Content-Type': 'application/json',
         },
-        'body': signed_url,
+        'body': json.dumps(response),
     }
